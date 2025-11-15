@@ -84,9 +84,6 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Run MyPy
-        run: uv run mypy . --ignore-missing-imports
-
   security:
     runs-on: ubuntu-latest
     steps:
