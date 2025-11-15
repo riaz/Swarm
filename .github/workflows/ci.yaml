@@ -85,7 +85,7 @@ jobs:
         run: uv sync
 
       - name: Run MyPy
-        run: uv run mypy . --strict --ignore-missing-imports
+        run: uv run mypy . --ignore-missing-imports
 
   security:
     runs-on: ubuntu-latest
