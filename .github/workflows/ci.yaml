@@ -13,10 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Cache pre-commit
         uses: actions/cache@v4
@@ -25,12 +29,10 @@ jobs:
           key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pre-commit
+        run: uv sync --extra dev
 
       - name: Run pre-commit
-        run: pre-commit run --all-files --show-diff-on-failure
+        run: uv run pre-commit run --all-files --show-diff-on-failure
 
   test:
     runs-on: ${{ matrix.os }}
@@ -38,32 +40,25 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev,test]"
+        run: uv sync --extra dev --extra test
 
       - name: Run tests with coverage
-        run: |
-          pytest --cov=. --cov-report=xml --cov-report=term-missing -v
+        run: uv run pytest --cov=. --cov-report=xml --cov-report=term-missing -v
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
@@ -77,39 +72,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install mypy types-all
+        run: uv sync --extra dev
 
       - name: Run MyPy
-        run: mypy . --strict --ignore-missing-imports
+        run: uv run mypy . --strict --ignore-missing-imports
 
   security:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit[toml] safety
+        run: uv sync --extra dev
 
       - name: Run Bandit
-        run: bandit -r . -c pyproject.toml
+        run: uv run bandit -r . -c pyproject.toml
 
       - name: Check dependencies for vulnerabilities
-        run: safety check --json
+        run: uv run safety check --json
 
   build:
     runs-on: ubuntu-latest
@@ -117,21 +116,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
+          enable-cache: true
 
-      - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Build package
-        run: python -m build
+        run: uv build
 
       - name: Check package
-        run: twine check dist/*
+        run: |
+          uv tool install twine
+          uv tool run twine check dist/*
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
