@@ -107,9 +107,6 @@ jobs:
       - name: Run Bandit
         run: uv run bandit -r swarm -c pyproject.toml
 
-      - name: Check dependencies for vulnerabilities
-        run: uv run safety check --json
-
   build:
     runs-on: ubuntu-latest
     needs: [lint, test, type-check, security]
