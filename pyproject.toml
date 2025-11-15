@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ai-swarm"
-version = "0.1.5"
+version = "0.1.6"
 description = "This is a framework for a multi-agent system"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -121,7 +121,7 @@ markers = [
 
 # Coverage configuration
 [tool.coverage.run]
-source = ["src"]
+source = ["swarm"]
 branch = true
 parallel = true
 omit = [
@@ -147,7 +147,7 @@ exclude_lines = [
 ]
 
 [tool.coverage.paths]
-source = ["src"]
+source = ["swarm"]
 
 # Bandit configuration
 [tool.bandit]
@@ -156,3 +156,6 @@ skips = ["B101"]  # assert_used - ok in tests
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*/tests/*"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["swarm"]
