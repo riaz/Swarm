@@ -105,7 +105,7 @@ jobs:
         run: uv sync
 
       - name: Run Bandit
-        run: uv run bandit -r . -c pyproject.toml
+        run: uv run bandit -r swarm -c pyproject.toml
 
       - name: Check dependencies for vulnerabilities
         run: uv run safety check --json

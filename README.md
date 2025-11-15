@@ -1,2 +1,3 @@
 # Swarm
-A general purpose multi-agent system 
+
+A general purpose multi-agent system
