@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ai-swarm"
-version = "0.1.6"
+version = "0.1.7"
 description = "This is a framework for a multi-agent system"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -21,11 +21,16 @@ classifiers = [
 
 dependencies = [
     "langchain>=1.0.7",
+    "langchain-google-genai>=3.0.3",
+    "langfuse>=3.10.0",
+    "loguru>=0.7.3",
+    "python-dotenv>=1.2.1",
 ]
 
 [dependency-groups]
 dev = [
     "bandit>=1.8.6",
+    "ipykernel>=7.1.0",
     "mypy>=1.18.2",
     "pre-commit>=4.4.0",
     "pytest>=9.0.1",

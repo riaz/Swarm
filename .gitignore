@@ -209,3 +209,4 @@ __marimo__/
 #Misc
 *.egg-info
 *__pycache__
+node_modules
