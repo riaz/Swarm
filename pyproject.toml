@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "swarm"
+name = "ai-swarm"
 version = "0.1.5"
 description = "This is a framework for a multi-agent system"
 readme = "README.md"
